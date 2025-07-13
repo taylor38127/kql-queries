@@ -1,0 +1,9 @@
+// KQL Query: Threat Events by User and Threat Type (UrlClickEvents)
+// Shows daily counts of threat events by user and type, last 60 days.
+// Requires fields: AccountUpn, ThreatTypes, TimeGenerated
+let TimeStart = startofday(ago(60d));
+let TimeEnd = startofday(now());
+UrlClickEvents
+| where TimeGenerated >= TimeStart and isnotempty(ThreatTypes)
+| summarize EventCount = count() by AccountUpn, ThreatTypes, bin(TimeGenerated, 1d)
+| render timechart
